@@ -5,7 +5,7 @@
  * This file is for demo purposes only.
  */
 $(function () {
-    'use strict'
+    'use strict';
 
     /**
      * Get access to plugins
@@ -91,7 +91,6 @@ $(function () {
         var new_reading = parseFloat($('#new_reading').val()) || 0;
 
         $.get("http://localhost:8000/compute/", {client: client, last_reading: last_reading, new_reading: new_reading}, function(result){
-            console.log(result);
             if(result.status === 'success'){
                 $('#totalAmount').val(result.amount);
                 $('#rate').val(result.rate);
@@ -122,15 +121,7 @@ $(function () {
         });
     });
 
-    $("#saveCollection").click(function () {
-        swal({
-          position: 'top-end',
-          type: 'success',
-          title: 'Transaction has been saved',
-          showConfirmButton: false,
-          timer: 1500
-        })
-    });
+
     function store(name, val) {
         if (typeof (Storage) !== 'undefined') {
             localStorage.setItem(name, val)
