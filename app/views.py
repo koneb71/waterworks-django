@@ -50,7 +50,10 @@ def client(request):
 
 
 def collection(request):
-    collections = Collection.objects.all().order_by('-id')
+    if request.GET.get('employee'):
+        collections = Collection.objects.filter(employee_id=request.GET.get('employee')).order_by('-id')
+    else:
+        collections = Collection.objects.all().order_by('-id')
     return render(request, 'app/transactions.html', {'collections': collections})
 
 
@@ -61,6 +64,7 @@ def employee(request):
 
 def meter_reading(request):
     clients = Client.objects.all()
+    employees = Employee.objects.all()
 
     if request.method == 'POST':
 
@@ -68,11 +72,13 @@ def meter_reading(request):
             client = Client.objects.get(id=request.POST['client'])
             new_reading = request.POST['new_reading']
             last_reading = request.POST['last_reading']
+            employee = Employee.objects.filter(id=request.POST['collector']).first()
             rate = WaterRate.objects.filter(name=request.POST['rate'], billing_classification_id=client.billing_classification.id).first()
             total_amount = request.POST['totalAmount']
 
             collect = Collection(
                 client_id=client,
+                employee_id=employee,
                 encoder_id=request.user,
                 water_rate=rate,
                 last_read=int(last_reading),
@@ -81,13 +87,13 @@ def meter_reading(request):
             )
             collect.save()
 
-            return render(request, 'app/meter_reading.html', {'clients': clients, 'success': True})
+            return render(request, 'app/meter_reading.html', {'clients': clients, 'employees': employees, 'success': True})
 
         except Exception as e:
             print(e)
-            return render(request, 'app/meter_reading.html', {'clients': clients, 'success': False})
+            return render(request, 'app/meter_reading.html', {'clients': clients, 'employees': employees, 'success': False})
 
-    return render(request, 'app/meter_reading.html', {'clients': clients, 'success': False})
+    return render(request, 'app/meter_reading.html', {'clients': clients, 'employees': employees, 'success': False})
 
 
 def compute_consumption(request):
@@ -107,7 +113,6 @@ def compute_consumption(request):
                 if rate.start <= diff <= rate.end:
                     if "minimum" in str(rate.name).lower(): compute = rate.rate
                     else: compute = diff * rate.rate
-                    print({'status': 'success', 'rate': rate.name, 'amount': compute, 'last_read': last_read})
                     return JsonResponse({'status': 'success', 'rate': rate.name, 'amount': compute, 'last_read': last_read})
 
     return JsonResponse({'status': 'fail'})

@@ -26,6 +26,22 @@
                                 </select>
                             </div>
                         </div>
+                        {% if not request.GET.employee %}
+                        <div class="form-group">
+                            <label for="collector" class="col-sm-3 control-label">
+                                Collector
+                            </label>
+                            <div class="col-sm-9">
+                                <select class="selectClient form-control" name="collector" id="collector">
+                                    {% for employee in employees %}
+                                        <option value="{{ employee.id }}">{{ employee.last_name }}, {{ employee.first_name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        {% else %}
+                        <input name="collector" id="collector" value="{{ request.GET.employee }}" hidden>
+                        {% endif %}
 
                         <div class="client-meter">
                             <div class="form-group">

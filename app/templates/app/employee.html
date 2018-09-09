@@ -42,7 +42,7 @@
                             <td>{% for area in employee.block_area.all %}{{ area }}, {% endfor %}</td>
                             <td>
                                 <a href="{% url 'meter-reading' %}?employee={{ employee.id }}" class="btn btn-sm btn-primary">Add Collections</a>
-                                <a href="#" class="btn btn-sm btn-warning">View Collections</a>
+                                <a href="{% url 'collections' %}?employee={{ employee.id }}" class="btn btn-sm btn-warning">View Collections</a>
                             </td>
                         </tr>
                         {% endfor %}
