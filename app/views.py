@@ -54,6 +54,11 @@ def collection(request):
     return render(request, 'app/transactions.html', {'collections': collections})
 
 
+def employee(request):
+    employees = Employee.objects.all().order_by('-id')
+    return render(request, 'app/employee.html', {'employees': employees})
+
+
 def meter_reading(request):
     clients = Client.objects.all()
 

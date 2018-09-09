@@ -20,7 +20,7 @@ class TextMessage:
     def connectPhone(self):
         #Timeout is needed for reading lines
         #COM4 is used on windows. still not sure what the naming conventions are on linux
-        self.SerialPort = serial.Serial('COM4', 115200, timeout=1)
+        self.SerialPort = serial.Serial('COM1', 115200, timeout=1)
         time.sleep(1)
 
     def sendMessage(self):
@@ -35,21 +35,21 @@ class TextMessage:
         #\x1A is the same as chr(26) which is an escape sequence like CTRL+Z
         #self.SerialPort.write(chr(26))
         #time.sleep(1)
-        print "message sent"
+        print("message sent")
 
     def readMessages(self):
-        print "\nPrinting all the messages stored in the current inbox:"
+        print("\nPrinting all the messages stored in the current inbox:")
         self.SerialPort.write('AT+CMGL="ALL"\r\n')
         time.sleep(1)
         x = self.SerialPort.readlines(1)
         for line in x:
-            print line.strip('\r\n')
+            print(line.strip('\r\n'))
 
     def disconnectPhone(self):
         self.SerialPort.close()
 
 if __name__ == "__main__":
     #The modem usually timeouts.
-    sms = TextMessage("09263011815", str(datetime.datetime.now())+" :hello!")
+    sms = TextMessage("09357184430", str(datetime.datetime.now())+" :hello!")
     sms.connectPhone()
     sms.readMessages()

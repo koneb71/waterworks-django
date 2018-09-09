@@ -14,7 +14,7 @@ $(function () {
     $('.selectClient').select2();
     $('.selectEmployee').select2();
     $('#dynamic-table').DataTable({
-        paging: false
+        "ordering": false
     });
 
     $('[data-toggle="control-sidebar"]').controlSidebar();

@@ -112,7 +112,7 @@ class Client(models.Model):
 class Employee(models.Model):
     first_name = models.CharField(max_length=30, null=True, blank=True)
     last_name = models.CharField(max_length=30, null=True, blank=True)
-    BlockArea = models.ManyToManyField(BlockArea)
+    block_area = models.ManyToManyField(BlockArea)
     created_date = models.DateTimeField(default=datetime.datetime.now, blank=True)
 
     def __str__(self):

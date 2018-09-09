@@ -36,13 +36,13 @@
                         </thead>
 
                         <tbody>
-                        {% for client in clients %}
+                        {% for employee in employees %}
                         <tr>
-                            <td>{{ client.account_number }}</td>
-                            <td>{{ client.meter_serial_number }}</td>
+                            <td>{{ employee.last_name }}, {{ employee.first_name }}</td>
+                            <td>{% for area in employee.block_area.all %}{{ area }}, {% endfor %}</td>
                             <td>
-                                <a href="#" class="btn btn-sm btn-warning">Update</a>
-                                <a href="#" class="btn btn-sm btn-danger">Delete</a>
+                                <a href="#" class="btn btn-sm btn-primary">Add Collections</a>
+                                <a href="#" class="btn btn-sm btn-warning">View Collections</a>
                             </td>
                         </tr>
                         {% endfor %}
