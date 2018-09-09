@@ -134,6 +134,7 @@ class WaterRate(models.Model):
 class Collection(models.Model):
     client_id = models.ForeignKey(Client)
     encoder_id = models.ForeignKey(User)
+    employee_id = models.ForeignKey(Employee)
     water_rate = models.ForeignKey(WaterRate, null=True, blank=True)
     last_read = models.IntegerField(default=0, null=True, blank=True)
     new_read = models.IntegerField(default=0, null=True, blank=True)
