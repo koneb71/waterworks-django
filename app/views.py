@@ -44,6 +44,10 @@ def logout_user(request):
     return HttpResponseRedirect(reverse('login_url'))
 
 
+def client_page(request):
+    return render(request, 'client/index.html')
+
+
 def client(request):
     clients = Client.objects.all()
     return render(request, 'app/client.html', {'clients': clients})
