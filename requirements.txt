@@ -1,2 +1,3 @@
 django==1.11
 pyserial
+django-import-export==1.0.1
