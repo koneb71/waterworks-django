@@ -437,6 +437,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         $("#about").hide();
         $("#searchbar").change(function () {
             $("#about").show();
+            $("#client-table").dataTable().fnDestroy();
+
             var id = $(".serch").val();
             $('#client-table').DataTable({
                 'ordering': false,

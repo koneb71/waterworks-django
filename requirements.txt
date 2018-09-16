@@ -1,3 +1,5 @@
 django==1.11
 pyserial
 django-import-export==1.0.1
+admin-rangefilter==0.3.7
+django-admin-interface

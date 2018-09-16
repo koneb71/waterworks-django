@@ -27,16 +27,26 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+IP1SMS_ACCOUNT = "ip1-15943"
+IP1SMS_PASSWORD = "y2ywvk5LZAistcgAjcmT"
+IP1SMS_API_URL = "api.ip1sms.com"
+IP1SMS_ENDPOINT = "/api/sms/send"
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    'admin_interface',
+    'flat_responsive', # only if django version < 2.0
+    'flat', # only if django version < 1.9
+    'colorfield',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rangefilter',
     'import_export',
     'app',
 ]
@@ -122,4 +132,3 @@ USE_TZ = True
 STATIC_URL = '/static/'
 AUTH_USER_MODEL = "app.User"
 
-IMPORT_EXPORT_USE_TRANSACTIONS = True

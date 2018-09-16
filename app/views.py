@@ -7,6 +7,7 @@ from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
+from app.ip1sms import SMSGateway
 from app.models import *
 
 
@@ -67,6 +68,7 @@ def employee(request):
 
 
 def meter_reading(request):
+    sms = SMSGateway(from_name="WaterWorks")
     clients = Client.objects.all()
     employees = Employee.objects.all()
 
@@ -77,7 +79,8 @@ def meter_reading(request):
             new_reading = request.POST['new_reading']
             last_reading = request.POST['last_reading']
             employee = Employee.objects.filter(id=request.POST['collector']).first()
-            rate = WaterRate.objects.filter(name=request.POST['rate'], billing_classification_id=client.billing_classification.id).first()
+            rate = WaterRate.objects.filter(name=request.POST['rate'],
+                                            billing_classification_id=client.billing_classification.id).first()
             total_amount = request.POST['totalAmount']
 
             collect = Collection(
@@ -91,11 +94,18 @@ def meter_reading(request):
             )
             collect.save()
 
-            return render(request, 'app/meter_reading.html', {'clients': clients, 'employees': employees, 'success': True})
+            sms_template = open("app/sms_templates/after_read_notification.txt", "r").read()
+            sms_template = sms_template.format(month=collect.created_date.strftime("%B"), bill=collect.total_amount,
+                                               due_date=collect.due_date.date().strftime('%B %d %Y'))
+            sms.sendMessage(collect.client_id.phone, sms_template)
+
+            return render(request, 'app/meter_reading.html',
+                          {'clients': clients, 'employees': employees, 'success': True})
 
         except Exception as e:
             print(e)
-            return render(request, 'app/meter_reading.html', {'clients': clients, 'employees': employees, 'success': False})
+            return render(request, 'app/meter_reading.html',
+                          {'clients': clients, 'employees': employees, 'success': False})
 
     return render(request, 'app/meter_reading.html', {'clients': clients, 'employees': employees, 'success': False})
 
@@ -115,9 +125,12 @@ def compute_consumption(request):
             diff = int(new_reading) - int(last_reading)
             for rate in rates:
                 if rate.start <= diff <= rate.end:
-                    if "minimum" in str(rate.name).lower(): compute = rate.rate
-                    else: compute = diff * rate.rate
-                    return JsonResponse({'status': 'success', 'rate': rate.name, 'amount': compute, 'last_read': last_read})
+                    if "minimum" in str(rate.name).lower():
+                        compute = rate.rate
+                    else:
+                        compute = diff * rate.rate
+                    return JsonResponse(
+                        {'status': 'success', 'rate': rate.name, 'amount': compute, 'last_read': last_read})
 
     return JsonResponse({'status': 'fail'})
 
@@ -129,8 +142,9 @@ def client_transaction(request):
         transactions = []
         for cl in client:
             transactions.append(
-                {'name': "%s, %s" % (cl.client_id.last_name, cl.client_id.first_name), 'class': cl.client_id.billing_classification.name, 'last_read': cl.last_read, 'new_read': cl.new_read, 'amount': cl.total_amount, 'created_date': cl.created_date.date(), 'due_date': cl.due_date.date()}
+                {'name': "%s, %s" % (cl.client_id.last_name, cl.client_id.first_name),
+                 'class': cl.client_id.billing_classification.name, 'last_read': cl.last_read, 'new_read': cl.new_read,
+                 'amount': cl.total_amount, 'created_date': cl.created_date.date(), 'due_date': cl.due_date.date()}
             )
         return JsonResponse({'data': transactions})
     return JsonResponse({'data': []})
-

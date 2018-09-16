@@ -1,0 +1,1 @@
+Your Bill for the month of {month} is P{bill}. Please pay your bill on or before {due_date}. Please do not reply.

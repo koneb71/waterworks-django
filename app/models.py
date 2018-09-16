@@ -115,6 +115,10 @@ class Employee(models.Model):
     block_area = models.ManyToManyField(BlockArea)
     created_date = models.DateTimeField(default=datetime.datetime.now, blank=True)
 
+    class Meta:
+        verbose_name = 'Collector'
+        verbose_name_plural = 'Collectors'
+
     def __str__(self):
         return "%s, %s" % (self.last_name, self.first_name)
 
