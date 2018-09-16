@@ -36,6 +36,7 @@
                             <th>New Read</th>
                             <th>Amount</th>
                             <th>Due Date</th>
+                            <th>Paid</th>
                         </tr>
                         </thead>
 
@@ -48,6 +49,13 @@
                                 <td>{{ collection.new_read }}</td>
                                 <td>{{ collection.total_amount }}</td>
                                 <td>{{ collection.due_date }}</td>
+                                <td>
+                                    {% if collection.is_paid %}
+                                        <span class="fa fa-check" style="color: green;"></span>
+                                    {% else %}
+                                        <span class="fa fa-times" style="color: red;"></span>
+                                    {% endif %}
+                                </td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -59,6 +67,7 @@
                             <th>New Read</th>
                             <th>Amount</th>
                             <th>Due Date</th>
+                            <th>Paid</th>
                         </tr>
                         </tfoot>
                     </table>

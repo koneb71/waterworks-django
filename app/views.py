@@ -13,7 +13,11 @@ from app.models import *
 
 def index(request):
     if request.user.is_authenticated():
-        return render(request, 'app/home.html')
+        num_clients = Client.objects.all().count()
+        num_paid_collections = Collection.objects.filter(is_paid=True).count()
+        num_employees = Employee.objects.all().count()
+        return render(request, 'app/home.html', {'num_clients': num_clients, "num_paid_collections": num_paid_collections,
+                                                 "num_employees": num_employees})
     else:
         return HttpResponseRedirect(reverse('login_url'))
 
@@ -57,6 +61,8 @@ def client(request):
 def collection(request):
     if request.GET.get('employee'):
         collections = Collection.objects.filter(employee_id=request.GET.get('employee')).order_by('-id')
+    elif request.GET.get('client'):
+        collections = Collection.objects.filter(client_id=request.GET.get('client')).order_by('-id')
     else:
         collections = Collection.objects.all().order_by('-id')
     return render(request, 'app/transactions.html', {'collections': collections})
@@ -144,7 +150,7 @@ def client_transaction(request):
             transactions.append(
                 {'name': "%s, %s" % (cl.client_id.last_name, cl.client_id.first_name),
                  'class': cl.client_id.billing_classification.name, 'last_read': cl.last_read, 'new_read': cl.new_read,
-                 'amount': cl.total_amount, 'created_date': cl.created_date.date(), 'due_date': cl.due_date.date()}
+                 'amount': cl.total_amount, 'created_date': cl.created_date.date(), 'due_date': cl.due_date.date(), 'is_paid': cl.is_paid}
             )
         return JsonResponse({'data': transactions})
     return JsonResponse({'data': []})
