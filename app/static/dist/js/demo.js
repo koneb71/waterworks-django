@@ -71,6 +71,25 @@ $(function () {
      * @returns void
      */
 
+    $("#client").change(function() {
+        var client = parseFloat($('#client').find(":selected").val()) || null;
+
+        $.get("http://localhost:8000/compute/", {client: client, last_reading: 0, new_reading: 0}, function(result){
+            if(result.status === 'success'){
+                $('#totalAmount').val(result.amount);
+                if(result.consumption > 0){
+                    $('#water_consumption').val(result.consumption);
+                }
+
+                if(result.last_read !== 0){
+                    setTimeout(function(){ $('#last_reading').val(result.last_read).attr("readonly", "true"); }, 100);
+                }
+
+            }
+        });
+    });
+
+
     $("#last_reading").change(function() {
         var client = parseFloat($('#client').find(":selected").val()) || null;
 
@@ -80,7 +99,9 @@ $(function () {
         $.get("http://localhost:8000/compute/", {client: client, last_reading: last_reading, new_reading: new_reading}, function(result){
             if(result.status === 'success'){
                 $('#totalAmount').val(result.amount);
-                $('#rate').val(result.rate);
+                if(result.consumption > 0){
+                    $('#water_consumption').val(result.consumption);
+                }
                 $('#last_reading').val(result.last_read).disable();
             }
         });
@@ -95,7 +116,7 @@ $(function () {
         $.get("http://localhost:8000/compute/", {client: client, last_reading: last_reading, new_reading: new_reading}, function(result){
             if(result.status === 'success'){
                 $('#totalAmount').val(result.amount);
-                $('#rate').val(result.rate);
+                $('#water_consumption').val(result.consumption);
                 if(result.last_read !== 0){
                     $('#last_reading').val(result.last_read).attr("readonly", "true");
                 }
@@ -103,26 +124,6 @@ $(function () {
             }
         });
     });
-
-    $("#client").change(function() {
-        var client = parseFloat($('#client').find(":selected").val()) || null;
-
-        var last_reading = parseFloat($('#last_reading').val()) || 0;
-        var new_reading = parseFloat($('#new_reading').val()) || 0;
-
-        $.get("http://localhost:8000/compute/", {client: client, last_reading: last_reading, new_reading: new_reading}, function(result){
-            if(result.status === 'success'){
-                $('#totalAmount').val(result.amount);
-                $('#rate').val(result.rate);
-
-                if(result.last_read !== 0){
-                    $('#last_reading').val(result.last_read).attr("readonly", "true");
-                }
-
-            }
-        });
-    });
-
 
     function store(name, val) {
         if (typeof (Storage) !== 'undefined') {

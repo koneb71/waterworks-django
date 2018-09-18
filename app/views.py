@@ -120,23 +120,45 @@ def compute_consumption(request):
     client_id = request.GET.get('client')
     new_reading = request.GET.get('new_reading')
     last_reading = request.GET.get('last_reading')
-    if client_id:
-        client = Client.objects.get(id=client_id)
-        rates = WaterRate.objects.filter(billing_classification_id=client.billing_classification_id)
-        last_read = 0
+    if new_reading == 0 == last_reading:
         collection = Collection.objects.filter(client_id=client_id)
         if collection.count() > 0:
-            last_read = collection.order_by('-id')[0].new_read
+            last_reading = collection.order_by('-id')[0].new_read
+            return JsonResponse(
+                {'status': 'success', 'consumption': 0, 'amount': 0, 'last_read': last_reading})
+    elif client_id:
+        client = Client.objects.get(id=client_id)
+        rates = WaterRate.objects.filter(billing_classification_id=client.billing_classification_id)
+        collection = Collection.objects.filter(client_id=client_id)
+
+        if collection.count() > 0:
+            last_reading = collection.order_by('-id')[0].new_read
         if client:
             diff = int(new_reading) - int(last_reading)
+            counter = 1
+            total_amount = 0.0
             for rate in rates:
-                if rate.start <= diff <= rate.end:
-                    if "minimum" in str(rate.name).lower():
-                        compute = rate.rate
+                if "minimum" in str(rate.name).lower():
+                    total_amount += float(rate.rate)
+                    counter += 10
+                elif rate.start <= diff <= rate.end and "above" in str(rate.name).lower():
+                    while counter < diff and (diff - counter) > 9:
+                        total_amount += float(rate.rate * 10)
+                        counter += 10
+                    if (diff - counter) < 9:
+                        remaining = diff - counter + 1
+                        if remaining > 0:
+                            total_amount += float(remaining * rate.rate)
+                elif rate.start <= diff <= rate.end:
+                    if (diff - counter) < 9:
+                        remaining = diff - counter + 1
+                        if remaining > 0:
+                            total_amount += float(remaining * rate.rate)
                     else:
-                        compute = diff * rate.rate
-                    return JsonResponse(
-                        {'status': 'success', 'rate': rate.name, 'amount': compute, 'last_read': last_read})
+                        total_amount += float(10 * rate.rate)
+                        counter += 10
+            return JsonResponse(
+                        {'status': 'success', 'consumption': diff, 'amount': str(total_amount), 'last_read': last_reading})
 
     return JsonResponse({'status': 'fail'})
 
