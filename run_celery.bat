@@ -1,0 +1,1 @@
+celery -A waterworks worker -l info

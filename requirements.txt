@@ -3,3 +3,6 @@ pyserial
 django-import-export==1.0.1
 admin-rangefilter==0.3.7
 django-admin-interface
+celery==4.2.1
+django-celery-results==1.0.1
+django-celery-beat==1.1.1

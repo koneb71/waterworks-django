@@ -149,7 +149,7 @@ def compute_consumption(request):
                         remaining = diff - counter + 1
                         if remaining > 0:
                             total_amount += float(remaining * rate.rate)
-                elif rate.start <= diff <= rate.end:
+                elif rate.start <= diff:
                     if (diff - counter) < 9:
                         remaining = diff - counter + 1
                         if remaining > 0:
