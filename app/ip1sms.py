@@ -3,6 +3,7 @@ import json
 import base64
 import requests
 
+from app.models import Client
 from waterworks import settings
 
 
@@ -27,6 +28,11 @@ class SMSGateway(object):
         }
         send = requests.post(self.url, data=message, headers=headers)
         print(send)
+
+    def sendAll(self, message):
+        clients = Client.objects.all()
+        for client in clients:
+            self.sendMessage(client.phone, message)
 
 
 # sms = SMSGateway()

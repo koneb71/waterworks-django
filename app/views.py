@@ -67,6 +67,10 @@ def collection(request):
         collections = Collection.objects.all().order_by('-id')
     return render(request, 'app/transactions.html', {'collections': collections})
 
+def reports(request):
+    collections = Collection.objects.filter(is_paid=True).order_by('-id')
+    return render(request, 'app/report.html', {'collections': collections})
+
 
 def employee(request):
     employees = Employee.objects.all().order_by('-id')

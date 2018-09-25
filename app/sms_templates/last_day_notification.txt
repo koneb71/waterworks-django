@@ -1,1 +1,1 @@
-Tomorrow will be the due for the month of {month}. Please your bill P{bill} on or before {due_date}. Please do not reply.
+Tomorrow will be the due for the month of {month}. Please your bill P{bill} on or before {due_date}. Thank you!

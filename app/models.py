@@ -48,9 +48,9 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(null=True, blank=True)
     phone = models.CharField(max_length=30, null=True, blank=True)
     is_staff = models.BooleanField(default=False)
-    is_accountant = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)
+    is_accountant = models.BooleanField(default=False, verbose_name="Accountant")
+    is_active = models.BooleanField(default=True)
+    is_admin = models.BooleanField(default=False, verbose_name="Admin")
     created_date = models.DateTimeField(default=datetime.datetime.now, blank=True)
 
     def get_full_name(self):
@@ -107,6 +107,12 @@ class Client(models.Model):
 
     def __str__(self):
         return "%s, %s %s," % (self.last_name, self.first_name, self.middle_name)
+
+
+class ClientProxy(Client):
+    class Meta:
+        proxy = True
+        verbose_name = 'SMS Announcement'
 
 
 class Employee(models.Model):

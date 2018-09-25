@@ -25,10 +25,10 @@ SECRET_KEY = 'jx23#np)0^rott48u#uer%d#9rbzqcdq*oe(no6wr$kdhfr#yd'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',]
 
-IP1SMS_ACCOUNT = "ip1-15943"
-IP1SMS_PASSWORD = "y2ywvk5LZAistcgAjcmT"
+IP1SMS_ACCOUNT = "ip1-15947"
+IP1SMS_PASSWORD = "77TUtaNU5oCeE6DbiNnX"
 IP1SMS_API_URL = "api.ip1sms.com"
 IP1SMS_ENDPOINT = "/api/sms/send"
 
@@ -125,7 +125,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+#USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
