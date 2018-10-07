@@ -25,6 +25,7 @@ def three_days_before_due_date():
             latest_collection = latest_collection.order_by('-id')[0]
             due_date = latest_collection.due_date.date()
             diff = due_date - today
+            print(diff.days)
             if diff.days == 3:
                 sms_template = open(os.path.join(BASE_DIR, 'app/sms_templates/3_days_left_notification.txt'),
                                     "r").read()

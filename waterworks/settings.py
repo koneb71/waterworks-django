@@ -27,8 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*',]
 
-IP1SMS_ACCOUNT = "ip1-15947"
-IP1SMS_PASSWORD = "77TUtaNU5oCeE6DbiNnX"
+IP1SMS_ACCOUNT = "ip1-16042"
+IP1SMS_PASSWORD = "ocjfVXUEpMQSNVDMpLfS"
 IP1SMS_API_URL = "api.ip1sms.com"
 IP1SMS_ENDPOINT = "/api/sms/send"
 
@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_beat',
     'django_celery_results',
+    'corsheaders',
     'rangefilter',
     'import_export',
     'app',
@@ -125,7 +126,7 @@ USE_I18N = True
 
 USE_L10N = True
 
-#USE_TZ = True
+USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)

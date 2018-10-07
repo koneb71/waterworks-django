@@ -1,23 +1,27 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import json
+
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.core import serializers
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse
 
 from app.ip1sms import SMSGateway
 from app.models import *
-
+import datetime
 
 def index(request):
     if request.user.is_authenticated():
         num_clients = Client.objects.all().count()
         num_paid_collections = Collection.objects.filter(is_paid=True).count()
         num_employees = Employee.objects.all().count()
-        return render(request, 'app/home.html', {'num_clients': num_clients, "num_paid_collections": num_paid_collections,
-                                                 "num_employees": num_employees})
+        return render(request, 'app/home.html',
+                      {'num_clients': num_clients, "num_paid_collections": num_paid_collections,
+                       "num_employees": num_employees})
     else:
         return HttpResponseRedirect(reverse('login_url'))
 
@@ -59,13 +63,27 @@ def client(request):
 
 
 def collection(request):
+    billing_class_in_param = request.GET.get('billing_class', None)
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+
+    billing_class = BillingClassification.objects.all()
     if request.GET.get('employee'):
-        collections = Collection.objects.filter(employee_id=request.GET.get('employee')).order_by('-id')
+        collections = Collection.objects.filter(employee_id=request.GET.get('employee'))
     elif request.GET.get('client'):
-        collections = Collection.objects.filter(client_id=request.GET.get('client')).order_by('-id')
+        collections = Collection.objects.filter(client_id=request.GET.get('client'))
     else:
-        collections = Collection.objects.all().order_by('-id')
-    return render(request, 'app/transactions.html', {'collections': collections})
+        collections = Collection.objects.all()
+
+    if billing_class_in_param:
+        collections = collections.filter(client_id__billing_classification__id=int(billing_class_in_param))
+    if from_date:
+        collections = collections.filter(due_date__gt=datetime.datetime.strptime(from_date, "%m/%d/%Y").strftime("%Y-%m-%d"))
+    if to_date:
+        collections = collections.filter(due_date__lt=datetime.datetime.strptime(to_date, "%m/%d/%Y").strftime("%Y-%m-%d"))
+    return render(request, 'app/transactions.html', {'collections': collections.order_by('-id'), 'billing_class': billing_class,
+                                                     'billing_class_in_param': False if billing_class_in_param else True})
+
 
 def reports(request):
     collections = Collection.objects.filter(is_paid=True).order_by('-id')
@@ -134,6 +152,8 @@ def compute_consumption(request):
         client = Client.objects.get(id=client_id)
         rates = WaterRate.objects.filter(billing_classification_id=client.billing_classification_id)
         collection = Collection.objects.filter(client_id=client_id)
+        surveyor = Employee.objects.filter(block_area=client.block_area)
+        surveyor = serializers.serialize('json', list(surveyor), fields=('first_name', 'last_name', 'id'))
 
         if collection.count() > 0:
             last_reading = collection.order_by('-id')[0].new_read
@@ -162,7 +182,8 @@ def compute_consumption(request):
                         total_amount += float(10 * rate.rate)
                         counter += 10
             return JsonResponse(
-                        {'status': 'success', 'consumption': diff, 'amount': str(total_amount), 'last_read': last_reading})
+                {'status': 'success', 'consumption': diff, 'amount': str(total_amount), 'last_read': last_reading,
+                 'class_type': client.billing_classification.name, 'surveyor': json.loads(surveyor)})
 
     return JsonResponse({'status': 'fail'})
 
@@ -176,7 +197,14 @@ def client_transaction(request):
             transactions.append(
                 {'name': "%s, %s" % (cl.client_id.last_name, cl.client_id.first_name),
                  'class': cl.client_id.billing_classification.name, 'last_read': cl.last_read, 'new_read': cl.new_read,
-                 'amount': cl.total_amount, 'created_date': cl.created_date.date(), 'due_date': cl.due_date.date(), 'is_paid': cl.is_paid}
+                 'amount': cl.total_amount, 'created_date': cl.created_date.date(), 'due_date': cl.due_date.date(),
+                 'is_paid': cl.is_paid}
             )
         return JsonResponse({'data': transactions})
     return JsonResponse({'data': []})
+
+
+def collection_filter(request):
+    billing_class = request.POST['billing_class']
+    from_date = request.POST['from_date']
+    to_date = request.POST['to_date']

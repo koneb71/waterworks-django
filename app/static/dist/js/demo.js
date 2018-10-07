@@ -14,8 +14,10 @@ $(function () {
     $('.selectClient').select2();
     $('.selectEmployee').select2();
     $('#dynamic-table').DataTable({
-        ordering: false,
+
     });
+
+    $('.date-picker').datepicker();
 
     $('[data-toggle="control-sidebar"]').controlSidebar();
     $('[data-toggle="push-menu"]').pushMenu();
@@ -77,6 +79,16 @@ $(function () {
         $.get("http://localhost:8000/compute/", {client: client, last_reading: 0, new_reading: 0}, function(result){
             if(result.status === 'success'){
                 $('#totalAmount').val(result.amount);
+                $('#class_type').val(result.class_type);
+
+                var selectbox = $('#collector');
+                selectbox.empty();
+                var list = '';
+                for (var j = 0; j < result.surveyor.length; j++){
+                        list += "<option value='" +result.surveyor[j].pk+ "'>" +result.surveyor[j].fields.last_name+", "+result.surveyor[j].fields.first_name+"</option>";
+                }
+                selectbox.html(list);
+
                 if(result.consumption > 0){
                     $('#water_consumption').val(result.consumption);
                 }
@@ -471,4 +483,13 @@ $.fn.dataTableExt.afnFiltering.push(
     return true;
   }
 );
-})
+});
+
+
+$(document).ready(function() {
+    var table = $('#transaction-table').DataTable();
+
+    // Add event listeners to the two range filtering inputs
+    $('#datepicker_from').keyup( function() { table.draw(); } );
+    $('#datepicker_to').keyup( function() { table.draw(); } );
+  } );

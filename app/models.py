@@ -122,8 +122,8 @@ class Employee(models.Model):
     created_date = models.DateTimeField(default=datetime.datetime.now, blank=True)
 
     class Meta:
-        verbose_name = 'Collector'
-        verbose_name_plural = 'Collectors'
+        verbose_name = 'Surveyor'
+        verbose_name_plural = 'Surveyors'
 
     def __str__(self):
         return "%s, %s" % (self.last_name, self.first_name)

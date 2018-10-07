@@ -18,7 +18,7 @@
 {% block content %}
     <div class="box">
         <div class="box-header">
-            <h3 class="box-title">Already Paid Customer List</h3>
+            <h3 class="box-title">Transaction List</h3>
         </div>
         <!-- /.box-header -->
         <div class="box-body">
@@ -28,9 +28,9 @@
                     <table id="dynamic-table" class="table table-striped table-bordered" style="width:100%">
                         <p id="date_filter">
                             <span id="date-label-from" class="date-label" name="from_date"><strong>From: </strong><input
-                                    class="date_range_filter " type="text" id="datepicker_from"/></span>
+                                    class="date_range_filter form-control" style="width: 250px" type="text" id="datepicker_from"/></span>
                             <span id="date-label-to" class="date-label" name="to_date"><strong>To: </strong><input
-                                    class="date_range_filter date" type="text" id="datepicker_to"/></span>
+                                    class="date_range_filter date form-control" style="width: 250px" type="text" id="datepicker_to"/></span>
                         </p>
                         <thead>
                         <tr>
