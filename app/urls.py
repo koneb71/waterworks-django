@@ -13,6 +13,7 @@ urlpatterns = [
     url(r'meter-reading/$', meter_reading, name='meter-reading'),
     url(r'transaction/meter$', client_transaction, name='transactions-client'),
     url(r'collections/$', collection, name='collections'),
+    url(r'generate-report/$', generate_report, name='generate_report'),
     url(r'reports/$', reports, name='reports'),
     url(r'', index, name='home'),
 

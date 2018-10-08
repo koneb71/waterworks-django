@@ -86,8 +86,26 @@ def collection(request):
 
 
 def reports(request):
-    collections = Collection.objects.filter(is_paid=True).order_by('-id')
-    return render(request, 'app/report.html', {'collections': collections})
+    return render(request, 'app/report.html')
+
+
+def generate_report(request):
+    from_date = request.POST.get('from_date')
+    to_date = request.POST.get('to_date')
+
+    collections = Collection.objects.filter(is_paid=True)
+    if from_date:
+        collections = collections.filter(due_date__gte=datetime.datetime.strptime(from_date, "%m/%d/%Y").strftime("%Y-%m-%d"))
+    if to_date:
+        collections = collections.filter(due_date__lte=datetime.datetime.strptime(to_date, "%m/%d/%Y").strftime("%Y-%m-%d"))
+
+    total_amount = 0
+
+    for collection in collections:
+        total_amount += collection.total_amount
+
+    return render(request, 'app/generate_report.html', {'collections': collections.order_by('-id'), 'total_amount': total_amount, 'from_date': from_date,
+                                               'to_date': to_date, 'date_now': datetime.datetime.now().date()})
 
 
 def employee(request):

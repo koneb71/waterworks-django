@@ -76,7 +76,7 @@ $(function () {
     $("#client").change(function() {
         var client = parseFloat($('#client').find(":selected").val()) || null;
 
-        $.get("http://localhost:8000/compute/", {client: client, last_reading: 0, new_reading: 0}, function(result){
+        $.get("/compute/", {client: client, last_reading: 0, new_reading: 0}, function(result){
             if(result.status === 'success'){
                 $('#totalAmount').val(result.amount);
                 $('#class_type').val(result.class_type);
@@ -108,7 +108,7 @@ $(function () {
         var last_reading = parseFloat($('#last_reading').val()) || 0;
         var new_reading = parseFloat($('#new_reading').val()) || 0;
 
-        $.get("http://localhost:8000/compute/", {client: client, last_reading: last_reading, new_reading: new_reading}, function(result){
+        $.get("/compute/", {client: client, last_reading: last_reading, new_reading: new_reading}, function(result){
             if(result.status === 'success'){
                 $('#totalAmount').val(result.amount);
                 if(result.consumption > 0){
@@ -125,7 +125,7 @@ $(function () {
         var last_reading = parseFloat($('#last_reading').val()) || 0;
         var new_reading = parseFloat($('#new_reading').val()) || 0;
 
-        $.get("http://localhost:8000/compute/", {client: client, last_reading: last_reading, new_reading: new_reading}, function(result){
+        $.get("/compute/", {client: client, last_reading: last_reading, new_reading: new_reading}, function(result){
             if(result.status === 'success'){
                 $('#totalAmount').val(result.amount);
                 $('#water_consumption').val(result.consumption);

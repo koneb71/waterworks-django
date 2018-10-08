@@ -16,66 +16,46 @@
 {% endblock %}
 
 {% block content %}
-    <div class="box">
-        <div class="box-header">
-            <h3 class="box-title">Transaction List</h3>
-        </div>
-        <!-- /.box-header -->
-        <div class="box-body">
-            <div class="row">
-                <div class="col-sm-12">
-
-                    <table id="dynamic-table" class="table table-striped table-bordered" style="width:100%">
-                        <p id="date_filter">
-                            <span id="date-label-from" class="date-label" name="from_date"><strong>From: </strong><input
-                                    class="date_range_filter form-control" style="width: 250px" type="text" id="datepicker_from"/></span>
-                            <span id="date-label-to" class="date-label" name="to_date"><strong>To: </strong><input
-                                    class="date_range_filter date form-control" style="width: 250px" type="text" id="datepicker_to"/></span>
-                        </p>
-                        <thead>
-                        <tr>
-                            <th class="select-filter">Block Area</th>
-                            <th>Client</th>
-                            <th>Class</th>
-                            <th>Amount</th>
-                            <th>Due Date</th>
-                            <th>Paid</th>
-                        </tr>
-                        </thead>
-
-                        <tbody>
-                        {% for collection in collections %}
-                            <tr>
-                                <td>{{ collection.client_id.block_area }}</td>
-                                <td>{{ collection.client_id }}</td>
-                                <td>{{ collection.client_id.billing_classification }}</td>
-                                <td>{{ collection.total_amount }}</td>
-                                <td>{{ collection.due_date }}</td>
-                                <td>
-                                    {% if collection.is_paid %}
-                                        <span class="fa fa-check" style="color: green;"></span>
-                                    {% else %}
-                                        <span class="fa fa-times" style="color: red;"></span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                        <tfoot>
-                        <tr>
-                            <th>Block Area</th>
-                            <th>Client</th>
-                            <th>Class</th>
-                            <th>Amount</th>
-                            <th>Due Date</th>
-                            <th>Paid</th>
-                        </tr>
-                        </tfoot>
-                    </table>
+    <div class="row">
+        <div class="col-md-5">
+            <div class="box">
+                <div class="box-header">
+                    <h3 class="box-title">Generate Report</h3>
                 </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <form class="form-horizontal" method="post" action="{% url 'generate_report' %}">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="from_date" class="col-sm-3 control-label">
+                                        From date
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control date-picker" name="from_date"
+                                               id="from_date">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="to_date" class="col-sm-3 control-label">
+                                        To date
+                                    </label>
+                                    <div class="col-sm-9">
+                                        <input type="text" class="form-control date-picker" name="to_date"
+                                               id="to_date">
+                                    </div>
+                                </div>
+                                <hr>
+                                <button class="btn btn-sm btn-primary pull-right" type="submit">Generate Report</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
             </div>
-
         </div>
-        <!-- /.box-body -->
+        <div class="col-md-7"></div>
     </div>
+
 {% endblock %}
