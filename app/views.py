@@ -226,3 +226,13 @@ def collection_filter(request):
     billing_class = request.POST['billing_class']
     from_date = request.POST['from_date']
     to_date = request.POST['to_date']
+
+
+def get_name(request):
+    client_id = request.GET.get('id')
+    data = Client.objects.filter(meter_serial_number=client_id).first()
+
+    if data:
+        return JsonResponse({'name': "%s %s, %s" % (data.first_name, data.middle_name, data.last_name), 'class_type': data.billing_classification.name})
+
+    return JsonResponse({'name': ''})

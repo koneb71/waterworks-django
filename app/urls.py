@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'collections/$', collection, name='collections'),
     url(r'generate-report/$', generate_report, name='generate_report'),
     url(r'reports/$', reports, name='reports'),
+    url(r'get-name/$', get_name, name='get_name'),
     url(r'', index, name='home'),
 
 ]

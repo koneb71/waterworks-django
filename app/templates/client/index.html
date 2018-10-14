@@ -157,8 +157,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
         <table id="client-table" class="table table-striped table-bordered" style="width:100%">
             <thead>
             <tr>
-                <th>Client</th>
-                <th>Class</th>
                 <th>Last Read</th>
                 <th>New Read</th>
                 <th>Amount</th>
@@ -169,8 +167,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             </thead>
             <tfoot>
             <tr>
-                <th>Client</th>
-                <th>Class</th>
                 <th>Last Read</th>
                 <th>New Read</th>
                 <th>Amount</th>
@@ -423,33 +419,41 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <script>
     $(document).ready(function () {
         $("#about").hide();
-        $("#searchbar").change(function () {
-            $("#about").show();
-            $("#client-table").dataTable().fnDestroy();
+        $("#searchbar").keypress(function (e) {
+            e.preventDefault();
+            if (e.which === 13) {
+                $("#about").show();
+                $("#client-table").dataTable().fnDestroy();
 
-            var id = $(".serch").val();
-            $('#client-table').DataTable({
-                'ordering': false,
-                "ajax": "/transaction/meter?id=" + id,
-                "columns": [
-                    {"data": "name"},
-                    {"data": "class"},
-                    {"data": "last_read"},
-                    {"data": "new_read"},
-                    {"data": "amount"},
-                    {"data": "created_date"},
-                    {"data": "due_date"},
-                    {"data": "is_paid"}
-                ],
-                "columnDefs": [
-                    {
-                        "render": function (data, type, row) {
-                            return (data === true) ? '<span class="fa fa-check" style="color: green;"></span>' : '<span class="fa fa-times" style="color: red;"></span>';
-                        },
-                        "targets": 7
-                    }
-                ]
-            });
+                var id = $(".serch").val();
+
+                $.get("{% url 'get_name' %}?id="+id, function(result){
+                    $(".tittle_w3ls").text(result.name + " Transactions");
+
+                });
+
+                $('#client-table').DataTable({
+                    'ordering': false,
+                    "ajax": "/transaction/meter?id=" + id,
+                    "columns": [
+                        {"data": "last_read"},
+                        {"data": "new_read"},
+                        {"data": "amount"},
+                        {"data": "created_date"},
+                        {"data": "due_date"},
+                        {"data": "is_paid"}
+                    ],
+                    "columnDefs": [
+                        {
+                            "render": function (data, type, row) {
+                                return (data === true) ? '<span class="fa fa-check" style="color: green;"></span>' : '<span class="fa fa-times" style="color: red;"></span>';
+                            },
+                            "targets": 7
+                        }
+                    ]
+                });
+            }
+            return false;
         });
 
     });
