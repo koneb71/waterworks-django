@@ -153,10 +153,14 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 <!-- choose-us -->
 <div class="ab_content" id="about">
     <div class="container">
-        <h3 class="tittle_w3ls">Meter Serial Transactions</h3>
+        <h4 class="tittle_w3ls">Meter Serial Transactions</h4>
+        <h5 class="classType"></h5>
+        <hr>
         <table id="client-table" class="table table-striped table-bordered" style="width:100%">
             <thead>
             <tr>
+                <th>Client</th>
+                <th>Class</th>
                 <th>Last Read</th>
                 <th>New Read</th>
                 <th>Amount</th>
@@ -167,6 +171,8 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             </thead>
             <tfoot>
             <tr>
+                <th>Client</th>
+                <th>Class</th>
                 <th>Last Read</th>
                 <th>New Read</th>
                 <th>Amount</th>
@@ -343,7 +349,6 @@ License URL: http://creativecommons.org/licenses/by/3.0/
     jQuery(document).ready(function ($) {
         $(".scroll").click(function (event) {
             event.preventDefault();
-
             $('html,body').animate({
                 scrollTop: $(this.hash).offset().top
             }, 1000);
@@ -399,11 +404,9 @@ License URL: http://creativecommons.org/licenses/by/3.0/
             easingType: 'linear'
         };
         */
-
         $().UItoTop({
             easingType: 'easeOutQuart'
         });
-
     });
 </script>
 
@@ -417,25 +420,26 @@ License URL: http://creativecommons.org/licenses/by/3.0/
 
 
 <script>
+
     $(document).ready(function () {
         $("#about").hide();
         $("#searchbar").keypress(function (e) {
-            e.preventDefault();
             if (e.which === 13) {
                 $("#about").show();
                 $("#client-table").dataTable().fnDestroy();
-
                 var id = $(".serch").val();
 
-                $.get("{% url 'get_name' %}?id="+id, function(result){
+                $.get("{% url 'get_name' %}?id=" + id, function (result) {
                     $(".tittle_w3ls").text(result.name + " Transactions");
+                    $(".classType").text("Class: " + result.class_type);
 
                 });
-
-                $('#client-table').DataTable({
+                var table = $('#client-table').DataTable({
                     'ordering': false,
                     "ajax": "/transaction/meter?id=" + id,
                     "columns": [
+                        {"data": "name"},
+                        {"data": "class"},
                         {"data": "last_read"},
                         {"data": "new_read"},
                         {"data": "amount"},
@@ -452,10 +456,19 @@ License URL: http://creativecommons.org/licenses/by/3.0/
                         }
                     ]
                 });
+                // Get the column API object
+                var serial = table.column(1);
+                serial.visible(false);
+                var name = table.column(0);
+                name.visible(false);
+
+                if ($('.serch').val() === "") {
+                    serial.visible(true);
+                    name.visible(true);
+                }
             }
             return false;
         });
-
     });
 </script>
 

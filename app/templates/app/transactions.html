@@ -55,6 +55,7 @@
                         <p>Meter Serial Number: <input class="form-control" id="name_filter" data-value="1" style="width: 300px !important;">
                         </p>
                         <h2 class="client_name"></h2>
+                        <h5 class="classType"></h5>
                         <thead>
                         <tr>
                             <th>Client</th>
@@ -129,10 +130,13 @@
             serial.visible(false);
             var name = table.column( 0 );
             name.visible(false);
+            var class_type = table.column( 2 );
+            class_type.visible(false);
 
             if($('#name_filter').val() === ""){
                 serial.visible(true);
                 name.visible(true);
+                class_type.visible(true);
             }
         }
 
@@ -146,9 +150,11 @@
                     $.get("{% url 'get_name' %}?id="+$('#name_filter').val(), function(result){
                         if(result.name){
                             $(".client_name").text(result.name + " Transactions");
+                            $(".classType").text("Class: "+ result.class_type);
                         }
                         else{
                             $(".client_name").text("");
+                            $(".classType").text("");
                         }
                     });
                 }

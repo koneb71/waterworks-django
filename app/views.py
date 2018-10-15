@@ -208,6 +208,7 @@ def compute_consumption(request):
 
 def client_transaction(request):
     client_id = request.GET.get('id')
+    print
     if client_id:
         client = Collection.objects.filter(client_id__meter_serial_number=client_id)
         transactions = []
@@ -218,6 +219,7 @@ def client_transaction(request):
                  'amount': cl.total_amount, 'created_date': cl.created_date.date(), 'due_date': cl.due_date.date(),
                  'is_paid': cl.is_paid}
             )
+        print(transactions)
         return JsonResponse({'data': transactions})
     return JsonResponse({'data': []})
 
@@ -235,4 +237,4 @@ def get_name(request):
     if data:
         return JsonResponse({'name': "%s %s, %s" % (data.first_name, data.middle_name, data.last_name), 'class_type': data.billing_classification.name})
 
-    return JsonResponse({'name': ''})
+    return JsonResponse({'name': '', 'class_type': ''})
